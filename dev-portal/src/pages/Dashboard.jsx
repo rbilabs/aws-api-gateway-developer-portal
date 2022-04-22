@@ -169,7 +169,7 @@ const Title = ({ apis }) => {
     <Header size='medium'>
       Usage for {extraApiCount ? (
         <Popup
-          trigger={<a style={{ cursor: 'pointer' }}>{firstApiName} and {extraApiCount} more...</a>}
+          trigger={<a href="#!" style={{ cursor: 'pointer' }}>{firstApiName} and {extraApiCount} more...</a>}
           content={apiList}
           on={['hover', 'click']}
           position='right center'
