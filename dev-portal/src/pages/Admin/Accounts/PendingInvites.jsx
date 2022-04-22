@@ -225,7 +225,7 @@ const CreateInviteModal = ({ onConfirm, open, onClose, messages }) => {
       const timer = setTimeout(() => { setNeedsAssistance(true) }, 3000 /* ms */)
       return () => { clearTimeout(timer) }
     }
-  }, [email, needsAssistance])
+  }, [email, needsAssistance, isEmailValid])
 
   return (
     <Modal open={open} onClose={onClose} size={'small'}>

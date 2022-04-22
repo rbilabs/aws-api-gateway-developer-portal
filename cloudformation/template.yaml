@@ -686,6 +686,7 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalCustomersTableName
+      BillingModule: PAY_PER_REQUEST
       AttributeDefinitions:
       - AttributeName: Id
         AttributeType: S
@@ -695,9 +696,9 @@ Resources:
       KeySchema:
       - AttributeName: Id
         KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+      # ProvisionedThroughput:
+      #   ReadCapacityUnits: 5
+      #   WriteCapacityUnits: 5
       # Marketplace support is currently broken
       # GlobalSecondaryIndexes:
       # - IndexName: MarketplaceCustomerIdIndex
@@ -718,15 +719,16 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalPreLoginAccountsTableName
+      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
       - AttributeName: UserId
         AttributeType: S
       KeySchema:
       - AttributeName: UserId
         KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+      # ProvisionedThroughput:
+      #   ReadCapacityUnits: 5
+      #   WriteCapacityUnits: 5
 
   FeedbackTable:
     Type: AWS::DynamoDB::Table
@@ -735,15 +737,16 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalFeedbackTableName
+      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
       - AttributeName: Id
         AttributeType: S
       KeySchema:
       - AttributeName: Id
         KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+      # ProvisionedThroughput:
+      #   ReadCapacityUnits: 5
+      #   WriteCapacityUnits: 5
       GlobalSecondaryIndexes:
       - IndexName: FeedbackIdIndex
         KeySchema:

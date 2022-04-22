@@ -5,8 +5,6 @@
 const path = require('path')
 const { p } = require('./util.js')
 
-// Don't attempt to load anything in Travis.
-if (process.env.TRAVIS) return
 
 const deployerConfigName = process.env.DEPLOYER_CONFIG
   ? path.resolve(process.env.DEPLOYER_CONFIG)
