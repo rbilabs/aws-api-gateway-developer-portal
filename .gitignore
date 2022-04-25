@@ -34,3 +34,5 @@ cognito.js
 .vscode
 .eslintcache
 *.iml
+.terraform
+.terraform.lock.hcl

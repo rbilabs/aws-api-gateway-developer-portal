@@ -1,0 +1,2 @@
+brand = "plk"
+stage = "qa"

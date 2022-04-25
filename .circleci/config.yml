@@ -18,8 +18,9 @@ references:
       only: main
   apply_matrix: &apply_matrix
     parameters:
-     region: [us-east-1]
-     brand: [bk, plk, th]
+      workspace: [service]
+      region: [us-east-1]
+      brand: [bk, plk, th]
 
 # -----------------------------------------------------------------------
 # CI docker images
@@ -31,18 +32,22 @@ executors:
         aws_auth: &ecr_auth
           aws_access_key_id: $ECR_AWS_ACCESS_KEY_ID
           aws_secret_access_key: $ECR_AWS_SECRET_ACCESS_KEY
+  terraform:
+    docker:
+      - image: 880659461790.dkr.ecr.us-east-1.amazonaws.com/rbi/terraform:1.0.3.4
+        aws_auth: *ecr_auth
 
 # # -----------------------------------------------------------------------
 # # Pipeline workflow parameters for workflows triggered by the API
 # # -----------------------------------------------------------------------
-# parameters:
-#   trigger:
-#     type: enum
-#     enum: ['default', 'pr-closed', 'update-packages']
-#     default: 'default'
-#   version:
-#     type: string
-#     default: ''
+parameters:
+  trigger:
+    type: enum
+    enum: ['default', 'pr-closed', 'update-packages']
+    default: 'default'
+  version:
+    type: string
+    default: ''
 
 # -----------------------------------------------------------------------
 # Reusable Commands
@@ -56,13 +61,13 @@ commands:
   #     - restore_cache:
   #         keys:
   #           - yarn-cache-v1-{{ checksum "yarn.lock" }}
-  save_yarn_cache:
-    steps:
-      - save_cache:
-          name: Save node_modules
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
-          paths:
-            - node_modules
+  # save_yarn_cache:
+  #   steps:
+  #     - save_cache:
+  #         name: Save node_modules
+  #         key: yarn-cache-v1-{{ checksum "yarn.lock" }}
+  #         paths:
+  #           - node_modules
 
   # Build artifacts cache commands
 
@@ -76,9 +81,81 @@ jobs:
   # Install and cache node_modules for a workspace
   # Build the artifacts for this CI run
   # -----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
+  # Deploy the application using Terraform
+  # -----------------------------------------------------------------------
+  terraform:
+    executor: terraform
+    parameters:
+      workspace:
+        type: string
+      brand:
+        type: string
+      stage:
+        type: string
+      region:
+        type: string
+      command:
+        type: enum
+        enum: ['apply', 'destroy']
+    steps:
+      - checkout
+      - run:
+          name: Run Terraform
+          environment:
+            REGION: << parameters.region >>
+            STAGE: << parameters.stage >>
+            BRAND: << parameters.brand >>
+          command: |
+            cd .aws/workspaces/<< parameters.workspace >>/<< parameters.region >>
+
+            # configure terraform aws credentials
+            AWS_PROFILE="rbi.$STAGE.$BRAND.ci"
+            source ci-configure-aws --prefix "$AWS_KEY_PREFIX" --profile "$AWS_PROFILE" --region "$REGION"
+
+            # parse version from git revision
+            VERSION=$(git rev-parse --short HEAD)
+
+            # determine stage and resource prefix
+            PREFIX=$STAGE
+            if [[ -n $CIRCLE_PULL_REQUEST ]]; then
+              # pull request
+              PREFIX="preview-${CIRCLE_PULL_REQUEST##*/}"
+              echo "prefix=\"$PREFIX\"" >> terraform.auto.tfvars
+            elif [ "<< parameters.command >>" == "destroy" ]; then
+              # destroy pull request preview
+              PREFIX="preview-<< pipeline.parameters.version >>"
+              echo "prefix=\"$PREFIX\"" >> terraform.auto.tfvars
+
+              # Override version to avoid race conditions
+              VERSION=latest
+            fi
+
+            # configure terraform workspace
+            CONFIG="$HOME/project/.aws/config/$STAGE.$BRAND.tfvars"
+            cat $CONFIG >> terraform.auto.tfvars
+
+            # configure backend
+            TFC_WORKSPACE="$AWS_REGION_SHORT-$PREFIX-$BRAND-aws-gateway-developer-portal"
+            echo "workspaces { name = \"$TFC_WORKSPACE\" }" > backend.hcl
+
+            # initialize workspace
+            tfc-assume-role -w "$TFC_WORKSPACE" -p "$AWS_PROFILE"
+            terraform init -backend-config=backend.hcl -backend-config="token=${TFC_TOKEN}"
+
+            # execute
+            if [ "<< parameters.command >>" == "apply" ]; then
+              tfc-plan "$TFC_WORKSPACE" "$HOME/project/.aws" "$PWD"
+              tfc-apply
+            elif [ "<< parameters.command >>" == "destroy" ]; then
+              terraform destroy -auto-approve
+              tfc-delete-workspace "$TFC_WORKSPACE"
+            fi
   build:
     executor: nodejs
     parameters: 
+      workspace:
+        type: string
       region: 
         type: string
       brand: 
@@ -188,8 +265,17 @@ workflows:
   # ---------------------------------------------------------
   master:
     jobs:
+      - terraform:
+          name: deploy-preview-<< matrix.brand >>
+          context: rbi.dev
+          stage: dev
+          command: apply
+          matrix: *apply_matrix
+          filters: *master_workflow_filters
       - build:
           context: rbi.dev
           filters: *master_workflow_filters
           stage: dev
           matrix: *apply_matrix
+          requires:
+            - terraform
