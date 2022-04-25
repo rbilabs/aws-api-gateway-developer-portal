@@ -9,12 +9,17 @@ version: 2.1
 # - Collapse this file in VSCODE with the Fold-All command for readability
 # -----------------------------------------------------------------------
 
-description: ctg-aws-devportal-service
+description: aws-api-gateway-developer-portal
+
 
 references:
   master_workflow_filters: &master_workflow_filters
     branches:
       only: main
+  apply_matrix: &apply_matrix
+    parameters:
+     region: [us-east-1]
+     brand: [bk, plk, th]
 
 # -----------------------------------------------------------------------
 # CI docker images
@@ -73,12 +78,35 @@ jobs:
   # -----------------------------------------------------------------------
   build:
     executor: nodejs
+    parameters: 
+      region: 
+        type: string
+      brand: 
+        type: string
+      stage:
+        type: string
     steps:
       - checkout
+      - run:
+          name: Short region environment
+          command:  |
+            if [[ "<< parameters.region >>" == "us-east-1" ]]; then
+              echo 'export SHORT_REGION="use1"' >> $BASH_ENV
+            else
+              echo 'export SHORT_REGION="euc1"' >> $BASH_ENV
+            fi
       - run:
           name: Build and deploy
           command:  |
             node run install release
+          matrix: *apply_matrix
+          environment:
+            AWS_REGION: << parameters.region >>
+            BUILD_ASSETS_BUCKET: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-build"
+            STACK_NAME: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api"
+            SITE_ASSETS_BUCKET: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
+            API_ASSETS_BUCKET: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
+            DEVELOPER_PORTAL_COGNITO: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
 
   # -----------------------------------------------------------------------
   # Install and cache node_modules for a workspace
@@ -163,3 +191,5 @@ workflows:
       - build:
           context: rbi.dev
           filters: *master_workflow_filters
+          stage: dev
+          matrix: *apply_matrix
