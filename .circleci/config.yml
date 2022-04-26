@@ -16,6 +16,9 @@ references:
   master_workflow_filters: &master_workflow_filters
     branches:
       only: main
+  pr_workflow_filters: &pr_workflow_filters
+    branches:
+      ignore: main
   apply_matrix: &apply_matrix
     parameters:
       workspace: [service]
@@ -136,7 +139,7 @@ jobs:
             cat $CONFIG >> terraform.auto.tfvars
 
             # configure backend
-            TFC_WORKSPACE="$AWS_REGION_SHORT-$PREFIX-$BRAND-aws-gateway-developer-portal"
+            TFC_WORKSPACE="$AWS_REGION_SHORT-$PREFIX-$BRAND-aws-developer-portal"
             echo "workspaces { name = \"$TFC_WORKSPACE\" }" > backend.hcl
 
             # initialize workspace
@@ -168,9 +171,9 @@ jobs:
           name: Short region environment
           command:  |
             if [[ "<< parameters.region >>" == "us-east-1" ]]; then
-              echo 'export SHORT_REGION="use1"' >> $BASH_ENV
+              echo 'export SHORT_REGION="'use1'"' >> $BASH_ENV
             else
-              echo 'export SHORT_REGION="euc1"' >> $BASH_ENV
+              echo 'export SHORT_REGION="'euc1'"' >> $BASH_ENV
             fi
       - run:
           name: Build and deploy
@@ -204,61 +207,22 @@ jobs:
 
 workflows:
   # Pull Requests
-  # pull-request:
-  #   jobs:
-  #     - build:
-  #         context: rbi.dev
-  #         filters: *pr_workflow_filters
-  #     - test:
-  #         context: rbi.dev
-  #         requires:
-  #           - build
-  #     - test-integration:
-  #         context: rbi.dev
-  #         requires:
-  #           - build
-  #     - sonarcloud:
-  #         context: SonarCloud
-  #         requires:
-  #           - test
-  #     - release:
-  #         name: release-preview-<< matrix.region >>
-  #         context: rbi.dev
-  #         matrix:
-  #           parameters:
-  #             region: [us-east-1]
-  #         requires:
-  #           - test
-  #           - test-integration
-  #     - terraform:
-  #         name: deploy-preview-<< matrix.brand >>
-  #         context: rbi.dev
-  #         stage: dev
-  #         command: apply
-  #         matrix:
-  #           parameters:
-  #             workspace: [service]
-  #             region: [us-east-1]
-  #             brand: [bk]
-  #         requires:
-  #           - release-preview-<< matrix.region >>
-  #         filters:
-  #           branches:
-  #             ignore:
-  #               - /^rbibot\/rbilabs\/.*/
-  #               - /^dependabot\/.*/
-  #     - test-e2e:
-  #         context: rbi.dev
-  #         requires:
-  #           - terraform
-  #     - automerge:
-  #         context: rbi.dev
-  #         filters: &rbi-bot
-  #           branches:
-  #             only:
-  #               - /^rbibot\/rbilabs\/.*/
-  #         requires:
-  #           - sonarcloud
+  pull-request:
+    jobs:
+      - terraform:
+          name: deploy-preview-<< matrix.brand >>
+          context: rbi.dev
+          stage: dev
+          command: apply
+          matrix: *apply_matrix
+          filters: *pr_workflow_filters
+      - build:
+          context: rbi.dev
+          filters: *pr_workflow_filters
+          stage: dev
+          matrix: *apply_matrix
+          requires:
+            - terraform
 
   # ---------------------------------------------------------
   # Dev Deployment
