@@ -89,6 +89,8 @@ jobs:
   # -----------------------------------------------------------------------
   terraform:
     executor: terraform
+    environment:
+      SHORT_REGION: use1
     parameters:
       workspace:
         type: string
