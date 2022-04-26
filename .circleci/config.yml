@@ -170,25 +170,21 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Short region environment
-          command:  |
-            if [[ "<< parameters.region >>" == "us-east-1" ]]; then
-              echo 'export SHORT_REGION="'use1'"' >> $BASH_ENV
-            else
-              echo 'export SHORT_REGION="'euc1'"' >> $BASH_ENV
-            fi
-      - run:
           name: Build and deploy
           command:  |
+            if [[ "<< parameters.region >>" == "us-east-1" ]]; then
+              short_region="use1"
+            else
+              short_region="euc1"
+            fi
+            export AWS_REGION="<< parameters.region >>"
+            export BUILD_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-build"
+            export STACK_NAME="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api"
+            export SITE_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
+            export API_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
+            export DEVELOPER_PORTAL_COGNITO="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
             node run install release
           matrix: *apply_matrix
-          environment:
-            AWS_REGION: << parameters.region >>
-            BUILD_ASSETS_BUCKET: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-build"
-            STACK_NAME: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api"
-            SITE_ASSETS_BUCKET: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
-            API_ASSETS_BUCKET: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
-            DEVELOPER_PORTAL_COGNITO: "{{ .Environment.SHORT_REGION }}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
 
   # -----------------------------------------------------------------------
   # Install and cache node_modules for a workspace
