@@ -179,10 +179,10 @@ jobs:
             fi
             export AWS_REGION="<< parameters.region >>"
             export BUILD_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-build"
-            export STACK_NAME: "${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api"
-            export SITE_ASSETS_BUCKET: "${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
-            export API_ASSETS_BUCKET: "${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
-            export DEVELOPER_PORTAL_COGNITO: "${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
+            export STACK_NAME="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api"
+            export SITE_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
+            export API_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
+            export DEVELOPER_PORTAL_COGNITO="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
             node run install release
           matrix: *apply_matrix
 
