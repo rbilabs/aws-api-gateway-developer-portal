@@ -21,7 +21,7 @@ terraform {
     workspaces {
       # default remote workspace
       # this value is overriden during CI runs
-      name = "euc1-dev-bk-aws-api-gateway-developer-portal"
+      name = "euc1-dev-bk-aws-gw-developer-portal"
     }
   }
 }

@@ -141,7 +141,7 @@ jobs:
             cat $CONFIG >> terraform.auto.tfvars
 
             # configure backend
-            TFC_WORKSPACE="$AWS_REGION_SHORT-$PREFIX-$BRAND-aws-developer-portal"
+            TFC_WORKSPACE="$AWS_REGION_SHORT-$PREFIX-$BRAND-aws-gw-developer-portal"
             echo "workspaces { name = \"$TFC_WORKSPACE\" }" > backend.hcl
 
             # initialize workspace
@@ -178,7 +178,7 @@ jobs:
               short_region="euc1"
             fi
             export AWS_REGION="<< parameters.region >>"
-            export BUILD_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-build"
+            export BUILD_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-builds"
             export STACK_NAME="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api"
             export SITE_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
             export API_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
