@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "deny_insecure_transport" {
   statement {
-    effect = "Deny"
+    effect = "Allow"
 
     actions = [
       "s3:*",
@@ -12,16 +12,8 @@ data "aws_iam_policy_document" "deny_insecure_transport" {
     ]
 
     principals {
-      type        = "*"
+      type        = "AWS"
       identifiers = ["*"]
-    }
-
-    condition {
-      test     = "Bool"
-      variable = "aws:SecureTransport"
-      values = [
-        "false"
-      ]
     }
   }
 }
