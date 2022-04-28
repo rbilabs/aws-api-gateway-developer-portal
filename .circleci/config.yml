@@ -157,8 +157,7 @@ jobs:
               tfc-delete-workspace "$TFC_WORKSPACE"
             fi
   build:
-    docker:
-      - image: ubuntu
+    executor: nodejs
     parameters: 
       workspace:
         type: string
