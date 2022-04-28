@@ -184,6 +184,7 @@ jobs:
             export API_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
             export DEVELOPER_PORTAL_COGNITO="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
             node run install release
+            node run build release
           matrix: *apply_matrix
 
   # -----------------------------------------------------------------------
