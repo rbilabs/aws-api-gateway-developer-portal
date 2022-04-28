@@ -31,7 +31,7 @@ references:
 executors:
   nodejs:
     docker:
-      - image: 880659461790.dkr.ecr.us-east-1.amazonaws.com/rbi/nodejs:12.20.1.1
+      - image: 880659461790.dkr.ecr.us-east-1.amazonaws.com/rbi/nodejs-ubuntu:12.20.1
         aws_auth: &ecr_auth
           aws_access_key_id: $ECR_AWS_ACCESS_KEY_ID
           aws_secret_access_key: $ECR_AWS_SECRET_ACCESS_KEY
@@ -183,11 +183,6 @@ jobs:
             export SITE_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
             export API_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
             export DEVELOPER_PORTAL_COGNITO="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
-            apt update -y
-            apt install python3-pip -y 
-            pip3 install aws-sam-cli --user
-            USER_BASE_PATH=$(python -m site --user-base)
-            export PATH=$PATH:$USER_BASE_PATH/bin
             node run install release
             node run build release
           matrix: *apply_matrix
