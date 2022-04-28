@@ -157,7 +157,8 @@ jobs:
               tfc-delete-workspace "$TFC_WORKSPACE"
             fi
   build:
-    executor: nodejs
+    docker:
+      - image: ubuntu
     parameters: 
       workspace:
         type: string
@@ -183,6 +184,8 @@ jobs:
             export SITE_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
             export API_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
             export DEVELOPER_PORTAL_COGNITO="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
+            apt update
+            apt install python3-pip
             pip3 install aws-sam-cli --user
             USER_BASE_PATH=$(python -m site --user-base)
             export PATH=$PATH:$USER_BASE_PATH/bin
