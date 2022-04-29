@@ -187,10 +187,15 @@ jobs:
 
             export AWS_REGION=<< parameters.region >>
             export BUILD_ASSETS_BUCKET=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-builds
-            export STACK_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api
-            export SITE_ASSETS_BUCKET=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets
-            export API_ASSETS_BUCKET=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts
-            export DEVELOPER_PORTAL_COGNITO=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth
+            export STACK_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-api
+            export SITE_ASSETS_BUCKET=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-api-assets
+            export API_ASSETS_BUCKET=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-api-artifacts
+            export DEVELOPER_PORTAL_COGNITO=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-api-auth
+            export CUSTOMERS_TABLE_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-customers-table
+            export PRELOGIN_ACCOUNTS_TABLE_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-prelogin-accounts
+            export FEEDBACK_TABLE_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-feedback-table
+            export COGNITO_IDENTITY_POOL_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-auth
+
             node run install release
             node run build release
           matrix: *apply_matrix

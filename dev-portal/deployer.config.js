@@ -15,11 +15,25 @@
 // See the "Deployer configuration" section of `BUILDING.md` for documentation on each of the parameters.
 "use strict";
 
+
+const n = 0
+
 module.exports = {
   region: process.env.AWS_REGION,
   buildAssetsBucket: process.env.BUILD_ASSETS_BUCKET,
   stackName: process.env.STACK_NAME,
   siteAssetsBucket: process.env.SITE_ASSETS_BUCKET,
   apiAssetsBucket: process.env.API_ASSETS_BUCKET,
-  cognitoDomainName: process.env.DEVELOPER_PORTAL_COGNITO ,
+  cognitoDomainName: process.env.DEVELOPER_PORTAL_COGNITO,
+  customersTableName: process.env.CUSTOMERS_TABLE_NAME,
+  preLoginAccountsTableName: process.env.PRELOGIN_ACCOUNTS_TABLE_NAME,
+  feedbackTableName: process.env.FEEDBACK_TABLE_NAME,
+  // Optional, but highly recommended for easier identification.
+  cognitoIdentityPoolName: process.env.COGNITO_IDENTITY_POOL_NAME,
+
+  // Optional, but highly recommended so you can keep the site in sync with what's in the repo.
+  staticAssetRebuildMode: 'overwrite-content',
+
+  // // Set development mode for local use.
+  // developmentMode: true
 };

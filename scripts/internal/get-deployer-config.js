@@ -15,6 +15,7 @@ const deployerConfig = require(deployerConfigName)
 const missing = []
 
 function getRequired (key) {
+  console.log('HELLOO', deployerConfig[key])
   const value = deployerConfig[key]
   if (value) return value
   exports.missing.push(key)
