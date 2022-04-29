@@ -178,6 +178,11 @@ jobs:
               short_region="euc1"
             fi
 
+            cp /home/circleci/.aws /home/circleci/config
+            rm /home/circleci/.aws
+            mkdir /home/circleci/.aws
+            mv /home/circleci/config /home/circleci/.aws
+
             source ci-configure-aws --prefix "ECR" --profile "rbi.<< parameters.stage >>.ci" --region << parameters.region >>
 
             export AWS_REGION=<< parameters.region >>
