@@ -177,12 +177,15 @@ jobs:
             else
               short_region="euc1"
             fi
-            export AWS_REGION="<< parameters.region >>"
-            export BUILD_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-builds"
-            export STACK_NAME="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api"
-            export SITE_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets"
-            export API_ASSETS_BUCKET="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts"
-            export DEVELOPER_PORTAL_COGNITO="${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth"
+
+            source ci-configure-aws --prefix "ECR" --profile "rbi.<< parameters.stage >>.ci" --region << parameters.region >>
+
+            export AWS_REGION=<< parameters.region >>
+            export BUILD_ASSETS_BUCKET=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-builds
+            export STACK_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api
+            export SITE_ASSETS_BUCKET=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-static-assets
+            export API_ASSETS_BUCKET=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-artifacts
+            export DEVELOPER_PORTAL_COGNITO=${short_region}-<< parameters.stage >>-<< parameters.brand >>-developer-portal-api-cognito-auth
             node run install release
             node run build release
           matrix: *apply_matrix
