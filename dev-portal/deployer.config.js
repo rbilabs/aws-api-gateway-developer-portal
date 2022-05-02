@@ -40,4 +40,7 @@ module.exports = {
   customDomainName: process.env.CUSTOM_DOMAIN_NAME,
   customDomainNameAcmCertArn: process.env.CUSTOM_DOMAIN_NAME_ACM_CERT_ARN,
   useRouted53NameServers: false,
+
+  // New value with every deployment - possibly commit id?
+  staticAssetRebuildToken: process.env.STATIC_ASSET_REBUILD_TOKEN,
 };
