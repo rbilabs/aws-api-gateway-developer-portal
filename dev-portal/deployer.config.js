@@ -31,9 +31,13 @@ module.exports = {
   // Optional, but highly recommended for easier identification.
   cognitoIdentityPoolName: process.env.COGNITO_IDENTITY_POOL_NAME,
 
+  accountRegistrationMode: 'invite', // invite or open
   // Optional, but highly recommended so you can keep the site in sync with what's in the repo.
   staticAssetRebuildMode: 'overwrite-content',
 
-  // // Set development mode for local use.
-  // developmentMode: true
+  // Set development mode for local use.
+  developmentMode: false,
+  customDomainName: process.env.CUSTOM_DOMAIN_NAME,
+  customDomainNameAcmCertArn: process.env.CUSTOM_DOMAIN_NAME_ACM_CERT_ARN,
+  useRouted53NameServers: false,
 };

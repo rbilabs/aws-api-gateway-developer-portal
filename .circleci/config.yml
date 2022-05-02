@@ -196,6 +196,11 @@ jobs:
             export FEEDBACK_TABLE_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-feedback-table
             export COGNITO_IDENTITY_POOL_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-auth
 
+            export CUSTOM_DOMAIN_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal.rbictg.com
+            export CUSTOM_DOMAIN_NAME_ACM_CERT_ARN=arn:aws:acm:us-east-1:880659461790:certificate/364f471f-1cdc-4100-ba15-fcbc350233b2
+
+            export STATIC_ASSET_REBUILD_TOKEN=12345567893423
+
             node run install release
             node run build release
           matrix: *apply_matrix
