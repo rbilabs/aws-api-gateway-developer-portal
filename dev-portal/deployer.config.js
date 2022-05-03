@@ -15,7 +15,6 @@
 // See the "Deployer configuration" section of `BUILDING.md` for documentation on each of the parameters.
 "use strict";
 
-
 const n = 0
 
 module.exports = {

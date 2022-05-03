@@ -196,7 +196,7 @@ jobs:
             export FEEDBACK_TABLE_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-feedback-table
             export COGNITO_IDENTITY_POOL_NAME=${short_region}-<< parameters.stage >>-<< parameters.brand >>-devportal-auth
 
-            export STATIC_ASSET_REBUILD_TOKEN=12345567893423
+            export STATIC_ASSET_REBUILD_TOKEN=123455678934211
 
             node run install release
             node run build release

@@ -1923,6 +1923,14 @@ Resources:
             S3OriginConfig:
              OriginAccessIdentity: !Sub >-
                origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+  
+  ParameterStoreForCloudfrontDistribution:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /devportal/cloudfrontdist
+      Description: Developer Portal Cloudfront distribution
+      Type: String
+      Value: !GetAtt DefaultCloudfrontDistribution.DomainName
 
   CustomDomainDistributionAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
@@ -2092,6 +2100,10 @@ Outputs:
       ]
     ]
     Description: CloudFront URL for website
+
+  DefaultCloudfrontDist:
+    Value: !GetAtt DefaultCloudfrontDistribution.DomainName
+    Description: Cloudfront distribution arn
 
   CustomWebsiteURL:
     Condition: UseCustomDomainName
