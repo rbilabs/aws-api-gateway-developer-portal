@@ -60,6 +60,11 @@ exports.staticAssetRebuildMode = getOptional('staticAssetRebuildMode')
 exports.developmentMode = getOptional('developmentMode')
 exports.edgeLambdaRebuildToken = getOptional('edgeLambdaRebuildToken')
 
+exports.awsShortRegion = getOptional('awsShortRegion')
+exports.brand = getOptional('brand')
+exports.stage = getOptional('stage')
+
+
 // AWS SAM CLI configuration
 exports.awsSamCliProfile = getOptional('awsSamCliProfile')
 

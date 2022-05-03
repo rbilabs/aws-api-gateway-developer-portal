@@ -39,4 +39,8 @@ module.exports = {
 
   // New value with every deployment - possibly commit id?
   staticAssetRebuildToken: process.env.STATIC_ASSET_REBUILD_TOKEN,
+
+  awsShortRegion: process.env.AWS_SHORT_REGION,
+  stage: process.env.STAGE,
+  brand: process.env.BRAND,
 };

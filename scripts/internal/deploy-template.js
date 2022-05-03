@@ -32,6 +32,9 @@ module.exports = async () => {
     staticAssetRebuildMode,
     developmentMode,
     edgeLambdaRebuildToken,
+    brand,
+    stage,
+    awsShortRegion,
     awsSamCliProfile
   } = deployerConfig
 
@@ -69,6 +72,9 @@ module.exports = async () => {
     ...(customDomainNameAcmCertArn ? [`CustomDomainNameAcmCertArn=${customDomainNameAcmCertArn}`] : []),
     ...(useRoute53Nameservers ? [`UseRoute53Nameservers=${useRoute53Nameservers}`] : []),
     ...(edgeLambdaRebuildToken ? [`EdgeLambdaRebuildToken=${edgeLambdaRebuildToken}`] : []),
+    ...(brand ? [`Brand=${brand}`]: []),
+    ...(stage ? [`Stage=${stage}`]: []),
+    ...(awsShortRegion ? [`AwsShortRegion=${awsShortRegion}`] : []),
     '--s3-bucket', buildAssetsBucket,
     ...(awsSamCliProfile ? ['--profile', awsSamCliProfile] : [])
   ])

@@ -169,6 +169,27 @@ Parameters:
       # - 'request'
       - 'invite'
 
+  AwsShortRegion:
+    Type: String
+    Description: Aws short region
+    Default: 'use1'
+    AllowedValues:
+      - 'use1'
+      - 'euc1'
+
+  Stage:
+    Type: String
+    Description: Stage of deployment
+    AllowedValues:
+      - 'dev'
+      - 'staging'
+      - 'qa'
+      - 'prod'
+
+  Brand:
+    Type: String
+    Description: RBI Brand - plk, bk, th
+
 Conditions:
   UseCustomDomainName: !And [!And [!Not [!Equals [!Ref CustomDomainName, '']], !Not [!Equals [!Ref CustomDomainNameAcmCertArn, '']]], !Condition NotDevelopmentMode]
   NoCustomDomainName: !And [!Not [ !Condition UseCustomDomainName ], !Condition NotDevelopmentMode]
@@ -1927,7 +1948,7 @@ Resources:
   ParameterStoreForCloudfrontDistribution:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: /devportal/cloudfrontdist
+      Name: !Sub /devportal/${AwsShortRegion}/${Stage}/${Brand}/cloudfrontdist
       Description: Developer Portal Cloudfront distribution
       Type: String
       Value: !GetAtt DefaultCloudfrontDistribution.DomainName

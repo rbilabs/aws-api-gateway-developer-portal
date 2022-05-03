@@ -198,6 +198,10 @@ jobs:
 
             export STATIC_ASSET_REBUILD_TOKEN=123455678934211
 
+            export AWS_SHORT_REGION=${short_region}
+            export STAGE=<< parameters.stage >>
+            export BRAND=<< parameters.brand >>
+
             node run install release
             node run build release
           matrix: *apply_matrix
