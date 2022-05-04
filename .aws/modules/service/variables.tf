@@ -14,7 +14,6 @@ variable "region" {
   default     = "us-east-1"
 }
 
-
 variable "short_region" {
   description = "The AWS Short Region"
   type        = string
@@ -31,9 +30,14 @@ variable "log_level" {
   type        = string
 }
 
-
 variable "create_domain" {
   description = "Create domain for developer portal"
   type        = bool
   default = false
+}
+
+variable "subdomain" {
+  description = "Custom subdomain"
+  type        = string
+  default     = null
 }

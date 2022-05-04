@@ -7,6 +7,12 @@ locals {
   app_name          = "developer-portal"
   prefix            = "${module.platform.region_short}-${var.prefix != null ? var.prefix : var.stage}-${var.brand}-${local.app_name}"
 
+  # Example domain: eu-sandbox-plk-devportal.rbictg.com
+  cf_domain_name = (var.isPreview == false && var.subdomain != null
+    ? join("", [local.region_short != "use1" ? "${substr(local.region_short, 0, 2)}-" : "", var.subdomain, ".", var.domain])
+    : null
+  )
+
   common_env_vars = {
     AWS_NODEJS_CONNECTION_REUSE_ENABLED = 1
     AWS_ACCOUNT_ID                      = local.account_id
