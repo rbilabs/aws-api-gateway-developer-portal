@@ -2,9 +2,9 @@ data "aws_ssm_parameter" "ami" {
   name = "/devportal/${var.short_region}/${var.stage}/${var.brand}/cloudfrontdist"
 }
 
-data "aws_acm_certificate" "acm" {
+data "aws_acm_certificate" "acm_cert" {
   count = var.create_domain ? 1 : 0 # only create at the later stage of the pipeline
-  provider = aws.acm
+  provider = aws.route53
 
   domain      = var.domain
   statuses    = ["ISSUED"]
