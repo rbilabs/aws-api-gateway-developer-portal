@@ -100,6 +100,8 @@ jobs:
         type: string
       region:
         type: string
+      create_domain:
+        type: boolean
       command:
         type: enum
         enum: ['apply', 'destroy']
@@ -139,6 +141,9 @@ jobs:
             # configure terraform workspace
             CONFIG="$HOME/project/.aws/config/$STAGE.$BRAND.tfvars"
             cat $CONFIG >> terraform.auto.tfvars
+            echo "create_domain=\"$CREATE_DOMAIN\"" >> terraform.auto.tfvars
+            echo "short_region=\"$AWS_REGION_SHORT\"" >> terraform.auto.tfvars
+
 
             # configure backend
             TFC_WORKSPACE="$AWS_REGION_SHORT-$PREFIX-$BRAND-aws-gw-developer-portal"
@@ -224,23 +229,34 @@ jobs:
             yarn release << parameters.stage >>
 
 workflows:
-  # Pull Requests
+  # ---------------------------------------------------------
+  # Pull Request - Preview
+  # ---------------------------------------------------------
   pull-request:
     jobs:
       - terraform:
           name: deploy-preview-<< matrix.brand >>
-          context: rbi.dev
+          context: rbi.preview
           stage: dev
+          create_domain: false
           command: apply
           matrix: *apply_matrix
           filters: *pr_workflow_filters
       - build:
-          context: rbi.dev
+          context: rbi.preview
           filters: *pr_workflow_filters
           stage: dev
           matrix: *apply_matrix
           requires:
             - terraform
+      # - set-domain:
+      #     name: domain-cloudfront
+      #     context: rbi.preview
+      #     filters: *pr_workflow_filters
+      #     stage: dev
+      #     matrix: *apply_matrix
+      #     requires:
+      #       - build
 
   # ---------------------------------------------------------
   # Dev Deployment
@@ -251,6 +267,7 @@ workflows:
           name: deploy-preview-<< matrix.brand >>
           context: rbi.dev
           stage: dev
+          create_domain: false
           command: apply
           matrix: *apply_matrix
           filters: *master_workflow_filters
@@ -260,4 +277,14 @@ workflows:
           stage: dev
           matrix: *apply_matrix
           requires:
-            - terraform
+            - deploy-preview-<< matrix.brand >>
+      - terraform:
+          name: domain-cloudfront-<< matrix.brand >>
+          context: rbi.dev
+          stage: dev
+          create_domain: true
+          command: apply
+          matrix: *apply_matrix
+          filters: *master_workflow_filters
+          requires:
+            - build
