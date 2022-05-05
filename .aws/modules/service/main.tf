@@ -9,7 +9,7 @@ locals {
 
   # Example domain: eu-sandbox-plk-devportal.rbictg.com
   cf_domain_name = (var.isPreview == false && var.subdomain != null
-    ? join("", [local.region_short != "use1" ? "${substr(local.region_short, 0, 2)}-" : "", var.subdomain, ".", var.domain])
+    ? join("", [local.region_short != "use1" ? "${substr(local.region_short, 0, 2)}-" : "", var.subdomain, ".", "rbictg.com"])
     : null
   )
 

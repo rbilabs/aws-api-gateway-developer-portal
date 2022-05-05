@@ -6,7 +6,7 @@ data "aws_acm_certificate" "acm_cert" {
   count = var.create_domain ? 1 : 0 # only create at the later stage of the pipeline
   provider = aws.route53
 
-  domain      = var.domain
+  domain      = "rbictg.com"
   statuses    = ["ISSUED"]
   most_recent = true
 }
@@ -14,7 +14,7 @@ data "aws_acm_certificate" "acm_cert" {
 data "aws_route53_zone" "r53_zone" {
   provider = aws.route53
 
-  name = "${var.domain}."
+  name = "rbictg.com."
 }
 
 resource "aws_route53_record" "r53_record" {
