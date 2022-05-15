@@ -1953,6 +1953,19 @@ Resources:
       Type: String
       Value: !GetAtt DefaultCloudfrontDistribution.DomainName
 
+  SsmRestApiId:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub /devportal/${AwsShortRegion}/${Stage}/${Brand}/apiId
+      Description: Developer Portal Cloudfront distribution
+      Type: String
+      Value: !Join
+         - ''
+         - - 'arn:aws:apigateway:'
+           - !Ref 'AWS::Region'
+           - '::/restapis/'
+           - !Ref ApiGatewayApi
+
   CustomDomainDistributionAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Condition: UseCustomDomainName
