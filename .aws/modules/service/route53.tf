@@ -32,7 +32,7 @@ resource "aws_route53_record" "r53_record" {
   zone_id = data.aws_route53_zone.r53_zone.zone_id
 
   alias {
-    name = data.aws_ssm_parameter.cloud_dist.id
+    name = data.aws_ssm_parameter.cloud_dist[0].id
     zone_id = "Z2FDTNDATAQYW2"
     evaluate_target_health = false
   }
