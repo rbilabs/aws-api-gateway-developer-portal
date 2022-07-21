@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "chart.js": "^2.9.4",
-    "dompurify": "^2.2.8",
+    "dompurify": "^2.3.8",
     "front-matter": "^3.0.0",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.21",
