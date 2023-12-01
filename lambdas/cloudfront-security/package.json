@@ -7,7 +7,7 @@
   "config": {},
   "license": "Apache-2.0",
   "dependencies": {
-    "archiver": "^4.0.1"
+    "archiver": "^5.0.0"
   },
   "devDependencies": {}
 }
